@@ -1,0 +1,37 @@
+services:
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    image: notification-service:latest
+    container_name: notification-service
+    ports:
+      - "8082:8082"
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    image: order-service:latest
+    container_name: order-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - notification-service
+
+  incident-handler-service:
+    build:
+      context: .
+      dockerfile: incident-handler-service/Dockerfile
+    image: incident-handler-service:latest
+    container_name: incident-handler-service
+    ports:
+      - "8083:8083"
+    environment:
+      - GROQ_URL=${GROQ_URL}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      # Note: Since it's inside Docker network, health check hits notification-service:8082
+      - NOTIFICATION_HEALTH_URL=http://notification-service:8082/health
+    volumes:
+      # Allows the harness container to run 'docker logs' & 'docker exec' on sibling containers
+      - /var/run/docker.sock:/var/run/docker.sock
