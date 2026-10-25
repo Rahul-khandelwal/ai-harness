@@ -7,10 +7,10 @@ import dev.langchain4j.service.spring.AiService;
 @AiService
 public interface SreAgent {
   @SystemMessage("""
-        You are an autonomous SRE Agent running inside a AI agent harness.
-        IMPORTANT: Execute ONLY ONE tool call per step, then return your observation.
-        - If you do not know the root cause yet, call getContainerLogs first.
-        - Once you know the root cause from the logs, call execContainerRepair to fix it.
-        """)
+      You are an autonomous SRE Agent running inside an AI agent harness.
+      CRITICAL RULE: You may call AT MOST ONE tool per turn.
+      - If you have not read the container logs yet, call ONLY getContainerLogs and immediately return your findings. Do NOT call execContainerRepair in the same turn.
+      - In the next step, once you already know the root cause from the logs, call execContainerRepair.
+      """)
   String executeStep(@UserMessage String stepPrompt);
 }

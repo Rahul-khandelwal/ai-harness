@@ -30,6 +30,10 @@ services:
     environment:
       - GROQ_URL=${GROQ_URL}
       - GROQ_API_KEY=${GROQ_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL}
+      - COHERE_API_KEY=${COHERE_API_KEY}
+      - COHERE_MODEL=${COHERE_MODEL}
       # Note: Since it's inside Docker network, health check hits notification-service:8082
       - NOTIFICATION_HEALTH_URL=http://notification-service:8082/health
     volumes:

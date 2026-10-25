@@ -19,9 +19,9 @@ public class DockerTools {
     System.out.printf("TOOL CALLED: execContainerRepair({%s}, {%s})%n", containerName, command);
 
     // HARNESS GUARDRAIL: Only allow deleting .lock files in /tmp/
-    if (!command.matches("^rm -f /tmp/[a-zA-Z0-9._-]+\\.lock$")) {
+    if (!command.matches("^rm (-f )?/tmp/[a-zA-Z0-9._-]+\\.lock$")) {
       System.out.printf("GUARDRAIL BLOCKED: {%s}%n", command);
-      return "ERROR: Command blocked by security guardrail. Only 'rm -f /tmp/*.lock' is allowed.";
+      return "ERROR: Command blocked by security policy. Use exact format: 'rm -f /tmp/<filename>.lock' (no wildcards or chaining).";
     }
 
     System.out.println("GUARDRAIL ALLOWED: Executing repair command");
@@ -32,8 +32,12 @@ public class DockerTools {
     try {
       Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
       String output = new String(process.getInputStream().readAllBytes());
-      process.waitFor();
-      return output.isBlank() ? "Command executed successfully." : output;
+      int exitCode = process.waitFor();
+      if (exitCode != 0) {
+        System.out.printf("Command failed (exit {%d}): {%s}%n", exitCode, output);
+        return "Command failed with exit code " + exitCode + ": " + output;
+      }
+      return output.isBlank() ? "Command executed successfully (exit code 0)." : output;
     } catch (Exception e) {
       return "Error executing command: " + e.getMessage();
     }

@@ -28,19 +28,18 @@ public class IncidentHandler {
   // 2. The Autonomous Agent Harness Loop
   private String runHarness(String alertPayload) {
     for (int step = 0; step < MAX_STEPS; step++) {
-      System.out.printf("=== HARNESS STEP {%d} OF {%d} ===%n", step, MAX_STEPS);
+      System.out.printf("=== HARNESS STEP {%d} OF {%d} ===%n", step + 1, MAX_STEPS);
 
-      String prompt = String.format(
-          "Step %d/%d. Incident Alert: %s. Service is currently UNHEALTHY (503). Take the next single action.",
-          step, MAX_STEPS, alertPayload
-      );
+      String prompt = (step == 0)
+          ? "Step 1/" + MAX_STEPS + ". Incident Alert: " + alertPayload + ". First, inspect the container logs ONLY and report the root cause."
+          : "Step " + (step + 1) + "/" + MAX_STEPS + ". Service is still unhealthy (503). Execute the targeted repair command based on the logs.";
 
       String agentResponse = sreAgent.executeStep(prompt);
       System.out.printf("Agent Action Summary: %s%n", agentResponse);
 
       // Deterministic Verification: Do NOT trust the LLM, verify via HTTP GET
-      if (isServiceHealthy("http://notification-service:8082/health")) {
-        System.out.printf("VERIFICATION PASSED: Service returned 200 OK on Step {%d}!", step);
+      if (isServiceHealthy("http://notification-service:8082/notification/health")) {
+        System.out.printf("VERIFICATION PASSED: Service returned 200 OK on Step {%d}!", step + 1);
         String report = sreAgent.executeStep(
             "The service is now healthy (200 OK). Write a brief Root Cause Analysis Incident Report."
         );
@@ -48,7 +47,7 @@ public class IncidentHandler {
         return report;
       }
 
-      System.out.printf("VERIFICATION FAILED: Service still unhealthy after Step {%d}. Continuing loop...%n", step);
+      System.out.printf("VERIFICATION FAILED: Service still unhealthy after Step {%d}. Continuing loop...%n", step + 1);
     }
 
     System.out.printf("MAX_STEPS ({%d}) exceeded! Cutting off LLM and escalating to human on-call.%n", MAX_STEPS);

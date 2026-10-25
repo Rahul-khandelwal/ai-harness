@@ -22,9 +22,13 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-spring-boot4-starter</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>dev.langchain4j</groupId>-->
+<!--            <artifactId>langchain4j-google-ai-gemini</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-open-ai-spring-boot4-starter</artifactId>
+            <artifactId>langchain4j-community-cohere</artifactId>
         </dependency>
     </dependencies>
 
