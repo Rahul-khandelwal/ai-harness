@@ -33,16 +33,6 @@
             </dependency>
             <dependency>
                 <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-open-ai-spring-boot4-starter</artifactId>
-                <version>${langchain.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-google-ai-gemini</artifactId>
-                <version>1.22.0</version>
-            </dependency>
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
                 <artifactId>langchain4j-community-cohere</artifactId>
                 <version>${langchain.version}</version>
             </dependency>

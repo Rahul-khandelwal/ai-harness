@@ -11,12 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class ChatConfig {
 
   @Bean
-  public ChatModel geminiChatModel() {
-//    return GoogleAiGeminiChatModel.builder()
-//        .apiKey(System.getenv("GEMINI_API_KEY"))
-//        .modelName(System.getenv("GEMINI_MODEL"))
-//        .temperature(0.0)
-//        .build();
+  public ChatModel cohereChatModel() {
     return CohereChatModel.builder()
         .apiKey(System.getenv("COHERE_API_KEY"))
         .modelName(System.getenv("COHERE_MODEL"))
